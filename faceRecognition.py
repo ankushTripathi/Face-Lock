@@ -13,6 +13,7 @@ videoCapture = cv2.VideoCapture(0)
 
 
 faceCascade = cv2.CascadeClassifier("haarcascades/haarcascade_frontalface_default.xml")
+eyeCascade = cv2.CascadeClassifier("haarcascades/haarcascade_eye_tree_eyeglasses.xml")
 
 lbphFace = cv2.createLBPHFaceRecognizer()
 try:
@@ -112,8 +113,26 @@ def recognize_face(frame):
         level = float("{0:.2f}".format(max(confidence)*0.1))
         print("you're %s"%recognized_face)
     get_face = max(set(final_face),key=final_face.count)
+    if  get_face == "ankush":
+        face1 = facedict['face2']
+        eyes1 = eyeCascade.detectMultiScale(face1,
+                                           scaleFactor=1.1,
+                                           minNeighbors=20,
+                                           minSize=(7,7),
+                                           flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+        if len(eyes1) > 0:
+            face2 = facedict['face5']
+            eyes2 = eyeCascade.detectMultiScale(face2,
+                                           scaleFactor=1.1,
+                                           minNeighbors=20,
+                                           minSize=(7,7),
+                                           flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+            if len(eyes2) == 0:
+                print("detected")
+                cv2.putText(frame,"welcome mothafucka",(200,300),cv2.FONT_HERSHEY_SIMPLEX, 1,(255,0,0),2)
+
     cv2.putText(frame,get_face,(10,50),cv2.FONT_HERSHEY_SIMPLEX, 1,(0,255,255),2)
-    cv2.putText(frame,str(level)+"%",(10,100),cv2.FONT_HERSHEY_SIMPLEX, 1,(255,0,0),2)
+ #   cv2.putText(frame,str(level)+"%",(10,100),cv2.FONT_HERSHEY_SIMPLEX, 1,(255,0,0),2)
     cv2.imshow("webcam",frame)
     facedict.clear()
 
